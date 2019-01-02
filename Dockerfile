@@ -11,7 +11,7 @@ RUN pip install --install-option="--prefix=/install" --ignore-installed -r requi
 
 FROM base
 COPY --from=builder /install /usr/local
-# COPY app /app
+COPY app /app
 
 WORKDIR /app
 RUN chmod +x ./wait-for
