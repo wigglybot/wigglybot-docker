@@ -1,0 +1,28 @@
+kind: pipeline
+name: wigglybot-docker build
+
+steps:
+
+- name: docker
+  pull: true
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: HUB_USER
+    password:
+      from_secret: HUB_PASS
+    repo: pcp1976/wigglybot-docker
+    tags:
+      - ${DRONE_BUILD_NUMBER}
+      - latest
+
+- name: upload archive
+  image: pcp1976/pytest-3.7:1.0.7
+  environment:
+    REPOSITORY_KEY:
+      from_secret: REPOSITORY_KEY
+    ARTIFACTORY_URL:
+      from_secret: ARTIFACTORY_URL
+  commands:
+  - zip -r wigglybot-docker.zip *
+  - curl -H "X-JFrog-Art-Api:$${REPOSITORY_KEY}" -T wigglybot-docker.zip "$${ARTIFACTORY_URL}/artifactory/wigglybot/${DRONE_COMMIT_BRANCH}/wigglybot-docker/wigglybot-docker.zip"
