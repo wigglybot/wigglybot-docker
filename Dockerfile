@@ -15,5 +15,3 @@ COPY app /app
 
 WORKDIR /app
 RUN chmod +x ./wait-for
-
-CMD ["./wait-for", "eventstore:2113", "--", "python", "component/app.py"]
